@@ -1,0 +1,64 @@
+#include <bits/stdc++.h> 
+long long merge(long long *arr, int start, int end,int mid)
+{
+    int len1 = mid-start+1;
+    int len2 = end-mid;
+
+    int *first = new int[len1];
+    int *second = new int[len2];
+    int mainArrayIndex = start;
+    for(int i=0;i<len1;i++)
+    {
+        first[i] = arr[mainArrayIndex++];
+    }
+    mainArrayIndex = mid+1;
+    for(int i=0;i<len2;i++)
+    {
+        second[i] = arr[mainArrayIndex++];
+    }
+
+    int ind1=0,ind2=0;
+    long long inv_count = 0;
+    mainArrayIndex = start;
+
+    while(ind1<len1 && ind2<len2)
+    {
+        if(first[ind1]<=second[ind2])
+        {
+            arr[mainArrayIndex++] = first[ind1++];
+        }
+        else
+        {
+            inv_count +=(len1-ind1);
+            arr[mainArrayIndex++] = second[ind2++];
+        }
+    }
+    while(ind1<len1)
+    {
+        arr[mainArrayIndex++] = first[ind1++];
+    }
+
+    while(ind2<len2)
+    {
+        arr[mainArrayIndex++] = second[ind2++];
+    }
+    return inv_count;
+}
+long long mergeSort(long long *arr, int start, int end)
+{
+    long long inv_count = 0;
+    if(start<end)
+    {
+        int mid = (start+end)/2;
+        inv_count += mergeSort(arr,start,mid);
+        inv_count += mergeSort(arr,mid+1,end);
+        inv_count += merge(arr,start,end,mid);
+    }
+
+    return inv_count;
+    
+}
+long long getInversions(long long *arr, int n){
+    long long inv_count = mergeSort(arr,0,n-1);
+    return inv_count;
+}
